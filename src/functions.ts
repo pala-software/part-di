@@ -9,7 +9,7 @@ export const createPart = <Type = any, Dependencies extends Part[] = []>(
     [Key in keyof Dependencies]: ReturnType<Dependencies[Key]>;
   }) => Type = () => {
     throw new NotImplementedError(definition);
-  }
+  },
 ): Part<Type, Dependencies> =>
   Object.assign(implementation, { definition, dependencies });
 
