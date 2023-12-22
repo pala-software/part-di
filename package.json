@@ -1,5 +1,6 @@
 {
   "name": "part-di",
+  "description": "Invert, choose and swap dependencies of application components",
   "version": "1.0.0",
   "author": "Jesse Sivonen <j.sivonen@hotmail.com>",
   "main": "dist/index.js",
