@@ -10,10 +10,10 @@ const find = (definition: Part, parts: Part[]) =>
         find(definition, [part.definition])),
   );
 
-const cache = new WeakMap<Part, any>();
 const resolve = <T extends Part>(
   definition: T,
   parts: Part[],
+  cache: WeakMap<Part, any>,
 ): ReturnType<T> => {
   const implementation = find(definition, parts) ?? definition;
   if (cache.has(implementation)) return cache.get(implementation);
@@ -23,8 +23,9 @@ const resolve = <T extends Part>(
       ? resolve(
           dependency,
           parts.filter((part) => !find(implementation.definition, [part])),
+          cache,
         )
-      : resolve(dependency, parts),
+      : resolve(dependency, parts, cache),
   );
 
   const resolved = implementation(dependencies) as ReturnType<T>;
@@ -39,6 +40,7 @@ export const ResolverPart = createPart(
   ([getParts]) =>
     (definition: Part): ReturnType<Part> => {
       const parts = getParts();
-      return resolve(definition, parts);
+      const cache = new WeakMap<Part, any>();
+      return resolve(definition, parts, cache);
     },
 );
