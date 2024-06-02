@@ -15,8 +15,8 @@ const resolve = <T extends Part>(
   parts: Part[],
   cache = new Map<Part, any>(),
 ): ReturnType<T> => {
-  if (cache.has(definition)) return cache.get(definition);
   const implementation = find(definition, parts) ?? definition;
+  if (cache.has(implementation)) return cache.get(implementation);
 
   const dependencies = implementation.dependencies.map((dependency) =>
     dependency === implementation.definition // Super part as dependency
@@ -29,7 +29,7 @@ const resolve = <T extends Part>(
   );
 
   const resolved = implementation(dependencies) as ReturnType<T>;
-  cache.set(definition, resolved);
+  cache.set(implementation, resolved);
 
   return resolved;
 };
