@@ -13,12 +13,14 @@ export const createPart = <Type, Dependencies extends Part[] = []>(
 ): Part<Type, Dependencies> =>
   Object.assign(implementation, { definition, dependencies });
 
-export const resolvePart = <Type>(
+export const resolvePart = async <Type>(
   definition: Part<Type>,
   parts: Part[],
-): ReturnType<typeof definition> => {
+): Promise<Awaited<ReturnType<typeof definition>>> => {
   const provider = createPart(ProviderPart, [], () => () => parts);
-  const resolve = ResolverPart([() => [...parts, provider]])(ResolverPart);
+  const resolve = await ResolverPart([() => [...parts, provider]])(
+    ResolverPart,
+  );
   return resolve(definition);
 };
 

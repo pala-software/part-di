@@ -10,25 +10,33 @@ const find = (definition: Part, parts: Part[]) =>
         find(definition, [part.definition])),
   );
 
-const resolve = <T extends Part>(
+const resolve = async <T extends Part>(
   definition: T,
   parts: Part[],
   cache = new Map<Part, any>(),
-): ReturnType<T> => {
+): Promise<Awaited<ReturnType<T>>> => {
   const implementation = find(definition, parts) ?? definition;
   if (cache.has(implementation)) return cache.get(implementation);
 
-  const dependencies = implementation.dependencies.map((dependency) =>
-    dependency === implementation.definition // Super part as dependency
-      ? resolve(
-          dependency,
-          parts.filter((part) => !find(implementation.definition, [part])),
-          cache,
-        )
-      : resolve(dependency, parts, cache),
-  );
+  const dependencies = [];
+  for (const dependency of implementation.dependencies) {
+    if (dependency === implementation.definition) {
+      // Super part as dependency
+      const resolved = await resolve(
+        dependency,
+        parts.filter((part) => !find(implementation.definition, [part])),
+        cache,
+      );
+      dependencies.push(resolved);
+    } else {
+      const resolved = await resolve(dependency, parts, cache);
+      dependencies.push(resolved);
+    }
+  }
 
-  const resolved = implementation(dependencies) as ReturnType<T>;
+  const resolved = (await implementation(dependencies)) as Awaited<
+    ReturnType<T>
+  >;
   cache.set(implementation, resolved);
 
   return resolved;
@@ -38,7 +46,7 @@ export const ResolverPart = createPart(
   "PartResolver",
   [ProviderPart],
   ([getParts]) =>
-    (definition: Part): ReturnType<Part> => {
+    (definition: Part): Promise<Awaited<ReturnType<Part>>> => {
       const parts = getParts();
       return resolve(definition, parts);
     },

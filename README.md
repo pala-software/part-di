@@ -25,7 +25,7 @@ export const SumPart = createPart(
   () =>
     // Implementation
     (a: number, b: number): number =>
-      a + b
+      a + b,
 );
 ```
 
@@ -37,7 +37,7 @@ export const SumPart = createPart<
   (a: number, b: number) => number
 >(
   // Name of the part
-  "Sum"
+  "Sum",
 );
 ```
 
@@ -53,7 +53,7 @@ export const RegularSumPart = createPart(
   ([math]) =>
     // Implementation
     (a, b) =>
-      math.sum(a, b)
+      math.sum(a, b),
 );
 ```
 
@@ -71,7 +71,7 @@ export const LoggingSumPart = createPart(
     (a, b) => {
       console.log({ a, b, sum: sum(a, b) });
       return sum(a, b);
-    }
+    },
 );
 ```
 
@@ -98,7 +98,7 @@ const ApplicationPart = createPart("Application", [SumPart], ([sum]) => ({
   },
 }));
 const OverrideSumPart = createPart(RegularSum, [], (a, b) => a - b);
-const application = resolvePart(ApplicationPart, [
+const application = await resolvePart(ApplicationPart, [
   LoggingSumPart,
   OverrideSumPart,
 ]);
