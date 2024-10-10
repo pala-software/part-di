@@ -1,7 +1,7 @@
 {
   "name": "part-di",
   "description": "Invert, choose and swap dependencies of application components",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "author": "Jesse Sivonen <j.sivonen@hotmail.com>",
   "source": "./src/index.ts",
   "main": "./dist/part-di.cjs",
