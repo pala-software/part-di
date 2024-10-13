@@ -5,3 +5,6 @@ export type Part<Type = any, Dependencies extends Part<any, any>[] = any> = {
     [Key in keyof Dependencies]: Awaited<ReturnType<Dependencies[Key]>>;
   }): Type;
 };
+
+export type Resolved<T extends Part> =
+  T extends Part<infer Type> ? Type : never;
