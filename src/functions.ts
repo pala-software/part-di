@@ -4,7 +4,7 @@ import { Part } from "./types";
 
 export const createPart = <Type, Dependencies extends Part[] = []>(
   definition: Part<Type> | string,
-  dependencies: [...Dependencies] = [] as Dependencies,
+  dependencies: [...Dependencies] = [] as unknown as Dependencies,
   implementation: (dependencies: {
     [Key in keyof Dependencies]: ReturnType<Dependencies[Key]>;
   }) => Type = () => {

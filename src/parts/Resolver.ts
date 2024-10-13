@@ -2,7 +2,7 @@ import { createPart } from "../functions";
 import { Part } from "../types";
 import { ProviderPart } from "./Provider";
 
-const find = (definition: Part, parts: Part[]) =>
+const find = (definition: Part | string, parts: Part[]): Part | undefined =>
   parts.find(
     (part) =>
       part.definition === definition ||
