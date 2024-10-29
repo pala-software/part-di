@@ -1,12 +1,12 @@
 import { NotImplementedError } from "./errors";
 import { ProviderPart, ResolverPart } from "./parts/index";
-import { Part } from "./types";
+import { Part, Resolved } from "./types";
 
 export const createPart = <Type, Dependencies extends Part[] = []>(
   definition: Part<Type> | string,
   dependencies: [...Dependencies] = [] as unknown as Dependencies,
   implementation: (dependencies: {
-    [Key in keyof Dependencies]: ReturnType<Dependencies[Key]>;
+    [Key in keyof Dependencies]: Resolved<Dependencies[Key]>;
   }) => Type = () => {
     throw new NotImplementedError(definition);
   },
@@ -16,7 +16,7 @@ export const createPart = <Type, Dependencies extends Part[] = []>(
 export const resolvePart = async <Type>(
   definition: Part<Type>,
   parts: Part[],
-): Promise<Awaited<ReturnType<typeof definition>>> => {
+): Promise<Resolved<typeof definition>> => {
   const provider = createPart(ProviderPart, [], () => () => parts);
   const resolve = await ResolverPart([() => [...parts, provider]])(
     ResolverPart,

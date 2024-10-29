@@ -34,9 +34,7 @@ const resolve = async <T extends Part>(
     }
   }
 
-  const resolved = (await implementation(dependencies)) as Awaited<
-    ReturnType<T>
-  >;
+  const resolved = await implementation(dependencies);
   cache.set(implementation, resolved);
 
   return resolved;
